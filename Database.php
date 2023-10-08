@@ -1,16 +1,13 @@
 <?php
 
-session_start();
-
-use Database as GlobalDatabase;
-
 class Database
 {
-   public $link;
+   private $link;
+
    public function connect()
    {
-        $this->link = mysqli_connect("localhost", "root", "");
-        mysqli_select_db($this->link, "blog");
+        $this->link = mysqli_connect("localhost", "egor", "some_password");
+        mysqli_select_db($this->link, "site-blog");
 
         if ($this->link == false) {
             throw new Exception('Нет подключения к БД');
@@ -39,6 +36,7 @@ class Database
         if($query == false) {
             echo mysqli_error($this->link);
         }
+       header('Location: sign.php');
    }
 
    public function sign($login, $password)
@@ -61,36 +59,26 @@ class Database
             }
    }
 
-   public function show_all_posts()
-   {
-        $sql = "SELECT `posts`.`id` AS 'post_id', `categories`.`category`, `users`.`login`, `posts`.`title`, `posts`.`text`, `posts`.`date`, `posts`.`date_changed`
-        FROM `posts`
-        INNER JOIN `categories` ON `posts`.`category` = `categories`.`id`
-        INNER JOIN `users` ON `posts`.`user` = `users`.`id`";
-        
-        
+    public function getLink(): mysqli
+    {
+        return $this->link;
+    }
+
+    public function getCategories()
+    {
+        $result = [];
+
+        $sql = "SELECT `id`, `name` FROM `posts`";
         $query = mysqli_query($this->link, $sql);
 
-        while($assoc = mysqli_fetch_assoc($query)) {
-            echo 
-            "<div class='card'>".
-            "<table border='1'>".
-                    "<tbody>".
-                        "<tr><td align='center'>Категория: ".$assoc['category']."</td><td align='center'>Автор: ".$assoc['login']."</td></tr>". 
-                        "<tr><td align='center' colspan='2'>".$assoc['title']."</td></tr>". 
-                        "<tr><td align='center' colspan='2'>".$assoc['text']."</td></tr>". 
-                        "<tr><td align='center'>".$assoc['date']."</td><td>".$assoc['date_changed']."</td></tr>".
-                    "</tbody>".
-                "</table>".
-            "</div>".
-            "<br />";
-            
-            if ($assoc['login'] == $_COOKIE['user_login']) {
-                echo "<a href='deletepost.php?editpost=".$assoc['post_id']."'>Редактировать пост</a>";
-                echo "<br />";
-                echo "<a href='deletepost.php?delpost=".$assoc['post_id']."'>Удалить пост</a>";
-            }
+        while ($assoc = mysqli_fetch_assoc($query)) {
+            $result[] = [
+                'id' => $assoc['id'],
+                'name' => $assoc['name']
+            ];
         }
+
+        return $result;
     }
 
     public function delete_post()
