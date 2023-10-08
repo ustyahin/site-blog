@@ -2,12 +2,16 @@
 
 class Database
 {
+    private const DB_HOST = 'localhost';
+    private const DB_USERNAME = 'egor';
+    // TODO const for database_password, database_name
+
    private $link;
 
    public function connect()
    {
-        $this->link = mysqli_connect("localhost", "egor", "some_password");
-        mysqli_select_db($this->link, "site-blog");
+        $this->link = mysqli_connect(self::DB_HOST, self::DB_USERNAME, 'some_password');
+        mysqli_select_db($this->link, 'site-blog');
 
         if ($this->link == false) {
             throw new Exception('Нет подключения к БД');
@@ -39,24 +43,25 @@ class Database
        header('Location: sign.php');
    }
 
-   public function sign($login, $password)
+   public function sign($login, $password): array
    {
         $login = mysqli_real_escape_string($this->link, $login);
         $password = mysqli_real_escape_string($this->link, $password);
         $password = sha1($password);
 
+        $result = [];
+
         $sql = "SELECT `id`, `name`, `login` FROM `users` WHERE `login` = '$login' AND `password` = '$password'";
         $query = mysqli_query($this->link, $sql);
-        if(mysqli_num_rows($query) == 1) {
+
+        if (mysqli_num_rows($query) == 1) {
             $user = mysqli_fetch_assoc($query);
-            setcookie("user_id", $user['id'], time() + 604800);
-            setcookie("user_name", $user['name'], time() + 604800);
-            setcookie("user_login", $user['login'], time() + 604800);
-            header( 'Location: /feed.php');
-        } else {
-            $_SESSION['error_sign'] = "Пользователь не найден";
-            header( 'Location:/sign.php');
-            }
+            $result['name'] = $user['name'];
+            $result['id'] = $user['id'];
+            $result['login'] = $user['login'];
+        }
+
+        return $result;
    }
 
     public function getLink(): mysqli
