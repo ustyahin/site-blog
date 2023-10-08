@@ -6,7 +6,7 @@ if (isset($_COOKIE['user_login'])) {
     header( 'Location: /index.php');
 }
 
-include("class.php");
+include("Database.php");
 
 $id = $_GET['delpost'];
 $del_post = new Database();

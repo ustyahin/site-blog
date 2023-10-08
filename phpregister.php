@@ -4,7 +4,7 @@ if (isset($_COOKIE['user_login'])) {
     header( 'Location: /feed.php');
 }
 
-include("class.php");
+include("Database.php");
 
 $name = filter_var(trim(htmlspecialchars($_POST['name'])));
 $login = filter_var(trim(htmlspecialchars($_POST['login'])));
