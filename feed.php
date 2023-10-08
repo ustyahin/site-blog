@@ -1,10 +1,17 @@
 <?php
 session_start();
-include("class.php");
 if (isset($_COOKIE['user_login'])) {
 }else{
     header( 'Location: /index.php');
 }
+
+require ("Database.php");
+$database = new Database();
+$database->connect();
+
+require ("Post.php");
+require ("Category.php");
+
 ?>
 
 <!DOCTYPE html>
@@ -20,16 +27,46 @@ if (isset($_COOKIE['user_login'])) {
         <div id="header"><h1 align="center">Блог</h1></div>
         
         <div id="sidebar">
+            <p><?php echo $_COOKIE['user_name'] ?></p>
             <p><a href="/feed.php">На главную</a></p>
             <p><a href="logout.php">Выйти</a></p>
             <p><h3>Категории:</h3></p>
+            <p>
+                <?php
+                /*$category = new Category();
+                $categories = $category->getAll();
+
+                foreach ($categories as $category) {
+                    echo '<p>' . $category['name'] . '</p>';
+                }*/
+                ?>
+            </p>
         </div>
 
         <div id="content">
             <?php
-            $show_all_posts = new Database();
-            $show_all_posts->connect();
-            $show_all_posts->show_all_posts();
+            $post = new Post($database);
+            $posts = $post->getAll();
+
+            foreach ($posts as $post) {
+                echo
+                    "<div class='card'>".
+                    "<table border='1'>".
+                    "<tbody>";
+                echo '<h1>' . $post['title'] . '</h1>';
+                echo '<p>' . $post['text'] . '</p>';
+
+                // "<tr><td align='center'>Категория: ".$assoc['category']."</td><td align='center'>Автор: ".$assoc['login']."</td></tr>".
+                // "<tr><td align='center' colspan='2'>".$assoc['title']."</td></tr>".
+                // "<tr><td align='center' colspan='2'>".$assoc['text']."</td></tr>".
+                // "<tr><td align='center'>".$assoc['date']."</td><td>".$assoc['date_changed']."</td></tr>".
+
+                echo "</tbody>".
+                    "</table>".
+                    "</div>".
+                    "<br />";
+
+            }
             ?>
             
             <p>
@@ -43,7 +80,7 @@ if (isset($_COOKIE['user_login'])) {
                 ?>
             </p>
         </div>      
-        faffsf
+
         
         
         
