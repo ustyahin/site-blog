@@ -29,16 +29,17 @@ require ("Category.php");
         <div id="sidebar">
             <p><?php echo $_COOKIE['user_name'] ?></p>
             <p><a href="/feed.php">На главную</a></p>
+            <p><a href="/createpost.php">Создать публикацию</a></p>
             <p><a href="logout.php">Выйти</a></p>
             <p><h3>Категории:</h3></p>
             <p>
                 <?php
-                /*$category = new Category();
+                $category = new Category($database);
                 $categories = $category->getAll();
 
-                foreach ($categories as $category) {
-                    echo '<p>' . $category['name'] . '</p>';
-                }*/
+                foreach ($categories as $categoryName) {
+                    echo '<p>' . $categoryName . '</p>';
+                }
                 ?>
             </p>
         </div>
