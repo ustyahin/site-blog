@@ -6,12 +6,24 @@ if (isset($_COOKIE['user_login'])) {
     header( 'Location: /index.php');
 }
 
-include("Database.php");
+require ("Database.php");
+require ("Post.php");
 
-$id = $_GET['delpost'];
-$del_post = new Database();
-$del_post->connect();
-$del_post->delete_post();
+$database = new Database();
+$database->connect();
+
+$id = filter_var(trim($_GET['del']), FILTER_SANITIZE_STRING);
+
+$del_post = new Post($database);
+$result = $del_post->remove($id);
+
+if ($result) {
+    header('Location: /feed.php');
+} else {
+    $_SESSION['error_text'] = "Error: cannot delete post." . mysqli_error($database->getLink());
+    header('Location: /changepost.php');
+}
+
 
 ?>
 
