@@ -4,7 +4,8 @@ if (isset($_COOKIE['user_login'])) {
     header( 'Location: /feed.php');
 }
 
-include("Database.php");
+require ("Database.php");
+require ("User.php");
 
 $login = filter_var(trim(htmlspecialchars($_POST['login'])));
 $password = filter_var(trim(htmlspecialchars($_POST['password'])));
@@ -21,17 +22,19 @@ if(empty($login) || empty($password)) {
     exit();
 }
 
-$sign = new Database();
-$sign->connect();
+$database = new Database();
+$database->connect();
+
+$sign = new User($database);
 $result = $sign->sign($login, $password);
 if (!empty($result)) {
     $time = time() + 604800;
     setcookie("user_id", $result['id'], $time);
     setcookie("user_name", $result['name'], $time);
     setcookie("user_login", $result['login'], $time);
+    setcookie("admin", $result['admin'], $time);
     header( 'Location: /feed.php');
 } else {
     header( 'Location: /sign.php');
 }
-
 ?>

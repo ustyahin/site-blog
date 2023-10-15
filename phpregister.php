@@ -4,7 +4,8 @@ if (isset($_COOKIE['user_login'])) {
     header( 'Location: /feed.php');
 }
 
-include("Database.php");
+require ("Database.php");
+require ('User.php');
 
 $name = filter_var(trim(htmlspecialchars($_POST['name'])));
 $login = filter_var(trim(htmlspecialchars($_POST['login'])));
@@ -25,14 +26,15 @@ if(empty($name) || empty($login)|| empty($password) || empty($confirmpassword)) 
 
 if($password != $confirmpassword) {
     $_SESSION['error_password'] = "Пароли не совпадают.";
-    header( 'Location:/register.php');
+    header( 'Location: /register.php');
     exit();
 }
 
 $password = sha1($password);
 
-$reg = new Database();
-$reg->connect();
+$database = new Database();
+$database->connect();
+$reg = new User($database);
 $reg->register($name, $login, $password);
 
 ?>
