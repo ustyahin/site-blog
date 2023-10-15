@@ -37,8 +37,8 @@ require ("Category.php");
                 $category = new Category($database);
                 $categories = $category->getAll();
 
-                foreach ($categories as $categoryName) {
-                    echo '<p>' . $categoryName . '</p>';
+                foreach ($categories as $cat) {
+                    echo "<p><a href='categories.php?cat=".$cat['id']."'>".$cat['name']."</a></p>";
                 }
                 ?>
             </p>
@@ -54,10 +54,20 @@ require ("Category.php");
                     "<div class='card'>".
                     "<table border='1'>".
                     "<tbody>";
-                echo '<h1>' . $post['title'] . '</h1>';
+                echo "<h1><a href='select.php?select=".$post['id']."'>".$post['title']."</a></h1>";
                 echo '<p>' . $post['text'] . '</p>';
 
-                // "<tr><td align='center'>Категория: ".$assoc['category']."</td><td align='center'>Автор: ".$assoc['login']."</td></tr>".
+                echo "<tr><td align='center'>Категория: ".$post['category']."</td><td align='center'>Автор: ".$post['user']."</td></tr>";
+                echo "<tr><td align='center'>Дата: ".$post['date']."</td><td align='center'>Изменено: ".$post['date_changed']."</td></tr>";
+
+                if ($_COOKIE['admin'] == "1" || $post['user'] == $_COOKIE['user_login'])
+                {
+                    echo "<tr><td align='center'><a href='deletepost.php?del=".$post['id']."'>Удалить</a></td>";
+                    echo "<td align='center'><a href='changepost.php?change=".$post['id']."'>Изменить</a></td></tr>";
+
+                }
+
+                //"</td><td align='center'>Дата изменения: ".$post['date_changed']."</td></tr>";
                 // "<tr><td align='center' colspan='2'>".$assoc['title']."</td></tr>".
                 // "<tr><td align='center' colspan='2'>".$assoc['text']."</td></tr>".
                 // "<tr><td align='center'>".$assoc['date']."</td><td>".$assoc['date_changed']."</td></tr>".
