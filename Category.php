@@ -1,15 +1,32 @@
 <?php
 
+
 class Category
 {
-    public function getAll()
+
+    private $database;
+
+    public function __construct($database)
     {
-        $sql = "SELECT `name` FROM 'categories'";
+        $this->database = $database;
+    }
+
+    public function getAll(): array
+    {
+        $sql = "SELECT * FROM `categories`";
         $query = mysqli_query($this->database->getLink(), $sql);
+
         $result = [];
 
-        while ($row = mysqli_fetch_assoc($query)) {
-            $result[] = ['category' => $row['name']];
+        while ($row = mysqli_fetch_assoc($query)){
+            $result[] = [
+                'id' => $row['id'],
+                'name' => $row['name']
+            ];
+
         }
+        return $result;
     }
  }
+
+
