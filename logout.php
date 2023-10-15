@@ -9,6 +9,8 @@ setcookie("user_id", null, -1);
 
 setcookie("user_login", null, -1);
 
+setcookie("admin", null, -1);
+
 header( 'Location: /index.php');
 
 ?>
