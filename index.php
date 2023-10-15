@@ -7,6 +7,7 @@ session_start();
 
 require "Database.php";
 require "Post.php";
+require "Category.php";
 
 if (isset($_COOKIE['user_login'])) {
     header( 'Location: /feed.php');
@@ -32,15 +33,17 @@ $database->connect();
         <div id="sidebar">
             <p><a href="/sign.php">Войти на сайт</a></p>
             <p><a href="/register.php">Зарегистрироваться</a></p>
-            <p><h3>Категории:</h3>
-            <ul>
+            <p><h3>Категории:</h3></p>
+            <p>
                 <?php
-                // var_dump($database->getCategories());
-                ?>
-                <li></li>
-            </ul>
+                $category = new Category($database);
+                $categories = $category->getAll();
 
-            </p>
+                foreach ($categories as $cat) {
+                    echo "<p><a href='categories.php?cat=".$cat['id']."'>".$cat['name']."</a></p>";
+                }
+                ?>
+
         </div>
 
         <div id="content">
@@ -68,6 +71,10 @@ $database->connect();
 
             }
             ?>
+
+
+
+
         </div>      
         
         
